@@ -1,2 +1,2 @@
 # Sudoku
-Solves Sudoku puzzles
+Solves Sudoku puzzles using backtracking.
