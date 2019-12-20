@@ -1,4 +1,4 @@
-from sudoku import complete
+from sudoku import complete, empty
 import pygame
 
 width = 360
@@ -42,7 +42,7 @@ def main():
         
         gameDisplay.fill(white)
         draw_grid(gameDisplay)
-        draw_cell(gameDisplay, 5, 0, 2)
+        populate_grid(gameDisplay)
 
         pygame.display.update()
         clock.tick(60)
@@ -64,14 +64,21 @@ def draw_grid(gameDisplay):
         pygame.draw.line(gameDisplay, black, (0, i), (width, i))
 
 def populate_grid(gameDisplay):
+    x_offset = cell_size // 4
+    y_offset = 0
     for row in board:
         for i in row:
-            draw_cell(gameDisplay, 0, 0, i)
+            if i != empty:
+                draw_cell(gameDisplay, x_offset, y_offset, i)
+            x_offset += 40
+            if x_offset > 360:
+                x_offset = cell_size // 4
+        y_offset += 40 
 
 
 # Draw cell at 
 def draw_cell(gameDisplay, x, y, num):
-    cell = small_font.render('%s' %num, True, grey)
+    cell = font.render('%s' %num, True, grey)
     rect = cell.get_rect()
     rect.topleft = (x, y)
     gameDisplay.blit(cell, rect)

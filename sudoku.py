@@ -1,5 +1,8 @@
 from numpy import sqrt
 
+empty = 0
+
+
 def complete(board, row, col):
     if col == len(board):
         col = 0
@@ -8,7 +11,7 @@ def complete(board, row, col):
         if row == len(board):
             return True
 
-    if board[row][col] != 0:
+    if board[row][col] != empty:
         return complete(board, row, col + 1)
     # Place from 1 - 9 in the grid
     for value in range(1, 10):
