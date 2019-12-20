@@ -1,54 +1,42 @@
 from numpy import sqrt
 
-rows = [[0, 0, 9, 0, 0, 0, 8, 0, 2],
-        [0, 0, 0, 4, 7, 0, 0, 0, 9],
-        [1, 5, 0, 3, 0, 0, 0, 0, 0],
-        [0, 0, 2, 7, 0, 0, 0, 0, 0],
-        [0, 9, 0, 0, 0, 0, 0, 8, 0],
-        [0, 0, 0, 0, 0, 1, 6, 0, 0],
-        [0, 0, 0, 0, 0, 3, 0, 7, 6],
-        [6, 0, 0, 0, 1, 5, 0, 0, 0],
-        [9, 0, 5, 0, 0, 0, 3, 0, 0]
-        ]
-
-
-def complete(row, col):
-    if col == len(rows):
+def complete(board, row, col):
+    if col == len(board):
         col = 0
         row += 1
 
-        if row == len(rows):
+        if row == len(board):
             return True
 
-    if rows[row][col] != 0:
-        return complete(row, col + 1)
+    if board[row][col] != 0:
+        return complete(board, row, col + 1)
     # Place from 1 - 9 in the grid
     for value in range(1, 10):
-        if can_place(row, col, value): 
-            rows[row][col] = value
-            if complete(row, col + 1):
+        if can_place(board, row, col, value): 
+            board[row][col] = value
+            if complete(board, row, col + 1):
                 return True
         
             # Back track because the placement broke the board
-            rows[row][col] = 0
+            board[row][col] = 0
         
     # Board was broken
     return False
 
-def can_place(row, col, char):
+def can_place(board, row, col, char):
 
-    for i in range(len(rows)):
+    for i in range(len(board)):
         # Check if the row is valid
-        if rows[row][i] == char:
+        if board[row][i] == char:
             return False
 
         # Check if the column is valid
-        if rows[i][col] == char:
+        if board[i][col] == char:
             return False
     
     # Check if sub Box is valid
     # Get regions of box
-    sub_box_size = int(sqrt(len(rows)))
+    sub_box_size = int(sqrt(len(board)))
     horizontal_index =  row // sub_box_size
     vertical_index = col // sub_box_size
 
@@ -57,19 +45,12 @@ def can_place(row, col, char):
 
     for i in range(top_left_row, top_left_row + 3):
         for j in range(top_left_col, top_left_col + 3):
-            if rows[i][j] == char:
+            if board[i][j] == char:
                 return False
     return True
 
 
-def print_rows(rows):
-    for row in rows:
+def print_rows(board):
+    for row in board:
         print(row)
         print("---------------------------")
-
-
-print_rows(rows)
-complete(0, 0)
-print("\n")
-print("\n")
-print_rows(rows)
