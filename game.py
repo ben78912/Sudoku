@@ -1,4 +1,4 @@
-from sudoku import complete, empty
+from sudoku import complete, can_place, empty
 import pygame
 
 width = 360
@@ -13,20 +13,22 @@ grey = (192, 192, 192)
 font_size = 44
 font_small = font_size // 2
 
-board = [[0, 0, 0, 0, 0, 0, 0, 5, 0],
-         [0, 2, 0, 0, 7, 0, 0, 0, 1],
-         [0, 0, 0, 0, 0, 6, 0, 9, 3],
-         [6, 7, 4, 8, 0, 0, 0, 0, 9],
-         [0, 0, 0, 3, 0, 4, 0, 0, 0],
-         [3, 0, 0, 0, 0, 7, 8, 4, 5],
-         [4, 8, 0, 2, 0, 0, 0, 0, 0],
-         [9, 0, 0, 0, 5, 0, 0, 1, 0],
-         [0, 6, 0, 0, 0, 0, 0, 0, 0]
+board = [[1, 0, 0, 0, 0, 6, 0, 0, 4],
+         [0, 0, 5, 0, 0, 0, 1, 8, 0],
+         [0, 0, 3, 8, 7, 0, 2, 9, 0],
+         [0, 0, 0, 0, 0, 9, 0, 0, 0],
+         [6, 0, 7, 0, 4, 0, 9, 0, 2],
+         [0, 0, 0, 1, 0, 0, 0, 0, 0],
+         [0, 1, 6, 0, 9, 2, 5, 0, 0],
+         [0, 2, 8, 0, 0, 0, 7, 0, 0],
+         [3, 0, 0, 5, 0, 0, 0, 0, 1]
          ]
+
+playing_board = board[:]
 
 def main():
     pygame.init()
-    clock = pygame.time.Clock()
+    global gameDisplay
     gameDisplay = pygame.display.set_mode((width, height))
     pygame.display.set_caption('Sudoku')
 
@@ -34,19 +36,56 @@ def main():
     font = pygame.font.Font('freesansbold.ttf', font_size)
     small_font = pygame.font.Font('freesansbold.ttf', font_small)
 
+    update_display()
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    solve(board, 0, 0)
+                    break
         
-        gameDisplay.fill(white)
-        draw_grid(gameDisplay)
-        populate_grid(gameDisplay)
+        # gameDisplay.fill(white)
+        # draw_grid(gameDisplay)
+        # populate_grid(playing_board, gameDisplay)
 
         pygame.display.update()
-        clock.tick(60)
 
+def update_display():
+    gameDisplay.fill(white)
+    draw_grid(gameDisplay)
+    populate_grid(board, gameDisplay)
+    pygame.display.update()
+    pygame.time.delay(50)
+
+
+def solve(board, row, col):
+    if col == len(board):
+        col = 0
+        row += 1
+
+        if row == len(board):
+            return True
+
+    if board[row][col] != empty:
+        return solve(board, row, col + 1)
+    # Place from 1 - 9 in the grid
+    for value in range(1, 10):
+        if can_place(board, row, col, value): 
+            board[row][col] = value
+            update_display()
+            if solve(board, row, col + 1):
+                return True
+        
+            # Back track because the placement broke the board
+            board[row][col] = 0
+            update_display()
+        
+    # Board was broken
+    return False
 
 def draw_grid(gameDisplay):
     # Cell lines
@@ -63,7 +102,7 @@ def draw_grid(gameDisplay):
     for i in range(0, height, square_size):
         pygame.draw.line(gameDisplay, black, (0, i), (width, i))
 
-def populate_grid(gameDisplay):
+def populate_grid(board, gameDisplay):
     x_offset = cell_size // 4
     y_offset = 0
     for row in board:

@@ -1,6 +1,16 @@
 from numpy import sqrt
 
 empty = 0
+board = [[1, 0, 0, 0, 0, 6, 0, 0, 4],
+         [0, 0, 5, 0, 0, 0, 1, 8, 0],
+         [0, 0, 3, 8, 7, 0, 2, 9, 0],
+         [0, 0, 0, 0, 0, 9, 0, 0, 0],
+         [6, 0, 7, 0, 4, 0, 9, 0, 2],
+         [0, 0, 0, 1, 0, 0, 0, 0, 0],
+         [0, 1, 6, 0, 9, 2, 5, 0, 0],
+         [0, 2, 8, 0, 0, 0, 7, 0, 0],
+         [3, 0, 0, 5, 0, 0, 0, 0, 1]
+         ]
 
 
 def complete(board, row, col):
@@ -33,6 +43,7 @@ def can_place(board, row, col, char):
         if board[row][i] == char:
             return False
 
+    for i in range(len(board)):
         # Check if the column is valid
         if board[i][col] == char:
             return False
@@ -57,3 +68,6 @@ def print_rows(board):
     for row in board:
         print(row)
         print("---------------------------")
+
+# complete(board, 0, 0)
+# print_rows(board)
