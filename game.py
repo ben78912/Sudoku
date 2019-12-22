@@ -1,4 +1,5 @@
 from sudoku import complete, can_place, empty
+from numpy import floor
 import pygame
 
 width = 360
@@ -9,6 +10,7 @@ cell_size = square_size // 3
 black = (0, 0, 0)
 white = (255,255,255)
 grey = (192, 192, 192)
+red = (255, 0, 0)
 
 font_size = 44
 font_small = font_size // 2
@@ -30,6 +32,9 @@ def main():
     pygame.init()
     global gameDisplay
     gameDisplay = pygame.display.set_mode((width, height))
+    mouseClicked = False
+    mousex = 0
+    mousey = 0
     pygame.display.set_caption('Sudoku')
 
     global font, small_font
@@ -39,20 +44,50 @@ def main():
     update_display()
 
     while True:
+        key = 0
+        mouseClicked = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:
+
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     solve(board, 0, 0)
-                    break
+                elif event.key == pygame.K_1:
+                    key = 1
+                elif event.key == pygame.K_2:
+                    key = 2
+                elif event.key == pygame.K_3:
+                    key = 3
+                elif event.key == pygame.K_4:
+                    key = 4
+                elif event.key == pygame.K_5:
+                    key = 5
+                elif event.key == pygame.K_6:
+                    key = 6
+                elif event.key == pygame.K_7:
+                    key = 7
+                elif event.key == pygame.K_8:
+                    key = 8
+                elif event.key == pygame.K_9:
+                    key = 9
+                elif event.key == pygame.K_BACKSPACE:
+                    key = 0
+                    draw_number(mousex, mousey, key)
+            
+            elif event.type == pygame.MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                mouseClicked = True
         
-        # gameDisplay.fill(white)
-        # draw_grid(gameDisplay)
-        # populate_grid(playing_board, gameDisplay)
+        if mouseClicked:
+            box_x = cell_size * floor(mousex / cell_size)
+            box_y = cell_size * floor(mousey / cell_size)
 
-        pygame.display.update()
+            draw_selected(box_x, box_y)
+
+        if key != 0:
+            draw_number(mousex, mousey, key)
 
 def update_display():
     gameDisplay.fill(white)
@@ -60,6 +95,17 @@ def update_display():
     populate_grid(board, gameDisplay)
     pygame.display.update()
     pygame.time.delay(50)
+
+def draw_number(x, y, num):
+    row = int(floor(y // cell_size))
+    column = int(floor(x / cell_size))
+
+    board[row][column] = num
+    update_display()
+    
+def draw_selected(x, y):
+    pygame.draw.rect(gameDisplay, red, (x, y, cell_size, cell_size), 1)
+    pygame.display.update()
 
 
 def solve(board, row, col):
