@@ -1,5 +1,6 @@
 from sudoku import complete, can_place, empty
 from numpy import floor
+from itertools import product
 import pygame
 
 width = 360
@@ -75,6 +76,9 @@ def main():
                 elif event.key == pygame.K_BACKSPACE:
                     key = 0
                     draw_number(mousex, mousey, key)
+                elif event.key == pygame.K_RETURN:
+                    if validate_board(board):
+                        print("Game Over")
             
             elif event.type == pygame.MOUSEBUTTONUP:
                 mousex, mousey = event.pos
@@ -168,6 +172,44 @@ def draw_cell(gameDisplay, x, y, num):
     rect.topleft = (x, y)
     gameDisplay.blit(cell, rect)
 
+
+def validate_board(board):
+    
+    for row in board:
+        if 0 in set(row):
+            print('Board incomplete')
+            return False
+    
+    DIGITS = set(range(1, 10))
+
+    # Check rows
+    for i in range(len(board)):
+        if not set(board[i]) == DIGITS:
+            print('Row %s contains a duplicate number' %i)
+            return False
+
+    # Check columns
+    columns = [[row[c] for row in board] for c in range(9)]
+    for i in range(len(columns)):
+        if not set(columns[i]) == DIGITS:
+            print('Column %s contains a duplicate number' %i)
+            return False
+    
+    THREES  = [(0, 1, 2), (3, 4, 5), (6, 7, 8)]
+    grid = 1
+    for row_block, col_block in product(THREES, THREES):
+        pairs = list(product(row_block, col_block))
+        block = []
+        for i in range(len(pairs)):
+            block.append(board[pairs[i][0]][pairs[i][1]])
+
+        
+        if not set(block) == DIGITS:
+            print('Grid %s contains a duplicate' %grid)
+            grid += 1
+            return False
+
+    return True
 
 
 if __name__=='__main__':

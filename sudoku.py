@@ -69,5 +69,12 @@ def print_rows(board):
         print(row)
         print("---------------------------")
 
-# complete(board, 0, 0)
-# print_rows(board)
+def main():
+    print_rows(board)
+    complete(board, 0, 0)
+    print('\n')
+    print_rows(board)
+
+
+if __name__=='__main__':
+    main()
