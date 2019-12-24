@@ -16,15 +16,15 @@ red = (255, 0, 0)
 font_size = 44
 font_small = font_size // 2
 
-board = [[1, 0, 0, 0, 0, 6, 0, 0, 4],
-         [0, 0, 5, 0, 0, 0, 1, 8, 0],
-         [0, 0, 3, 8, 7, 0, 2, 9, 0],
-         [0, 0, 0, 0, 0, 9, 0, 0, 0],
-         [6, 0, 7, 0, 4, 0, 9, 0, 2],
-         [0, 0, 0, 1, 0, 0, 0, 0, 0],
-         [0, 1, 6, 0, 9, 2, 5, 0, 0],
-         [0, 2, 8, 0, 0, 0, 7, 0, 0],
-         [3, 0, 0, 5, 0, 0, 0, 0, 1]
+board = [[1, 8, 2, 9, 5, 6, 3, 7, 4],
+         [9, 7, 5, 2, 3, 4, 1, 8, 6],
+         [4, 6, 3, 8, 7, 1, 2, 9, 5],
+         [2, 4, 1, 7, 6, 0, 8, 5, 3],
+         [6, 5, 7, 3, 4, 8, 9, 1, 2],
+         [8, 3, 9, 1, 2, 5, 4, 6, 7],
+         [7, 1, 6, 4, 9, 2, 5, 3, 8],
+         [5, 2, 8, 6, 1, 3, 7, 4, 9],
+         [3, 9, 4, 5, 8, 7, 6, 2, 1]
          ]
 
 playing_board = board[:]
@@ -85,8 +85,9 @@ def main():
                 mouseClicked = True
         
         if mouseClicked:
-            box_x = cell_size * floor(mousex / cell_size)
-            box_y = cell_size * floor(mousey / cell_size)
+            update_display()
+            box_x = int(cell_size * floor(mousex / cell_size))
+            box_y = int(cell_size * floor(mousey / cell_size))
 
             draw_selected(box_x, box_y)
 
@@ -185,14 +186,14 @@ def validate_board(board):
     # Check rows
     for i in range(len(board)):
         if not set(board[i]) == DIGITS:
-            print('Row %s contains a duplicate number' %i)
+            print('Row %s contains a duplicate number' %(i + 1))
             return False
 
     # Check columns
     columns = [[row[c] for row in board] for c in range(9)]
     for i in range(len(columns)):
         if not set(columns[i]) == DIGITS:
-            print('Column %s contains a duplicate number' %i)
+            print('Column %s contains a duplicate number' %(i + 1))
             return False
     
     THREES  = [(0, 1, 2), (3, 4, 5), (6, 7, 8)]
